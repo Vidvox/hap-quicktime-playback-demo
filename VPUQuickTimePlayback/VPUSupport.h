@@ -15,7 +15,7 @@
 #define kVPUSPixelFormatTypeRGB_DXT1 'DXt1'
 #define kVPUSPixelFormatTypeRGBA_DXT1 'DXT1'
 #define kVPUSPixelFormatTypeRGBA_DXT5 'DXT5'
-#define kVPUSPixelFormatTypeYCoCg_DXT5 'DYT5'
+#define kVPUSPixelFormatTypeYCoCg_DXT5 'DYt5'
 
 BOOL VPUSMovieHasVPUTrack(QTMovie *movie);
 CFDictionaryRef VPUCreateCVPixelBufferOptionsDictionary();
