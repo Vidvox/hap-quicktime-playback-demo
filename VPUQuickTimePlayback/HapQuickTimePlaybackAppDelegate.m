@@ -6,12 +6,12 @@
 //  Copyright 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "VPUQuickTimePlaybackAppDelegate.h"
-#import "VPUSupport.h"
+#import "HapQuickTimePlaybackAppDelegate.h"
+#import "HapSupport.h"
 #import "VVBasicMacros.h"
 #import <OpenGL/CGLMacro.h>
 
-@implementation VPUQuickTimePlaybackAppDelegate
+@implementation HapQuickTimePlaybackAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     sharedContext = [[NSOpenGLContext alloc] initWithFormat:[qtGLView pixelFormat] shareContext:[qtGLView openGLContext]];
@@ -48,13 +48,13 @@
             title = @"SampleQT";
             break;
         case 1:
-            title = @"SampleVPU";
+            title = @"SampleHap";
             break;
         case 2:
-            title = @"SampleVPUAlpha";
+            title = @"SampleHapAlpha";
             break;
         case 3:
-            title = @"SampleVPUYCoCg";
+            title = @"SampleHapYCoCg";
             break;
         default:
             title = nil;
@@ -94,12 +94,12 @@
     // don't play the movie until it has been attached to a context, otherwise it will start decompression with a non-optimal pixel format
     
     OSStatus		err = noErr;
-    if (VPUSMovieHasVPUTrack(movie))
+    if (HapSMovieHasHapTrack(movie))
     {
         // we re-use a texture for uploading the DXT pixel-buffer
-        pbTexture = [[VPUPixelBufferTexture alloc] initWithContext:[sharedContext CGLContextObj]];
+        pbTexture = [[HapPixelBufferTexture alloc] initWithContext:[sharedContext CGLContextObj]];
         
-        CFDictionaryRef pixelBufferOptions = VPUCreateCVPixelBufferOptionsDictionary();
+        CFDictionaryRef pixelBufferOptions = HapSCreateCVPixelBufferOptionsDictionary();
         
         // QT Visual Context attributes
         NSDictionary *visualContextOptions = [NSDictionary dictionaryWithObject:(NSDictionary *)pixelBufferOptions

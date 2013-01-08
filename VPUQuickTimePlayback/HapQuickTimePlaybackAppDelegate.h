@@ -12,9 +12,9 @@
 #import <QTKit/QTKit.h>
 #import <QuickTime/QuickTime.h>
 #import "GLView.h"
-#import "VPUPixelBufferTexture.h"
+#import "HapPixelBufferTexture.h"
 
-@interface VPUQuickTimePlaybackAppDelegate : NSObject <NSApplicationDelegate> {
+@interface HapQuickTimePlaybackAppDelegate : NSObject <NSApplicationDelegate> {
     NSWindow *window;
     NSUInteger              inputSelection;
     
@@ -26,7 +26,7 @@
     
     IBOutlet GLView			*qtGLView;
     
-    VPUPixelBufferTexture      *pbTexture;
+    HapPixelBufferTexture      *pbTexture;
 }
 
 - (void) timerCallback:(NSTimer *)t;

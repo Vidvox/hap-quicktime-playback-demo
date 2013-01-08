@@ -1,5 +1,5 @@
 //
-//  VPUPixelBufferTexture.h
+//  HapPixelBufferTexture.h
 //
 //  Created by Tom Butterworth on 16/05/2012.
 //  Copyright (c) 2012 Tom Butterworth. All rights reserved.
@@ -9,7 +9,7 @@
 #import <CoreVideo/CoreVideo.h>
 #import <OpenGL/OpenGL.h>
 
-@interface VPUPixelBufferTexture : NSObject
+@interface HapPixelBufferTexture : NSObject
 {
 @private
     CGLContextObj   cgl_ctx;
@@ -24,13 +24,13 @@
     GLhandleARB      shader;
 }
 /**
- Returns a VPUPixelBufferTexture to draw in the provided CGL context.
+ Returns a HapPixelBufferTexture to draw in the provided CGL context.
  */
 - (id)initWithContext:(CGLContextObj)context;
 
 /**
  The pixel-buffer to draw. It must have a pixel-format type (as returned
- by CVPixelBufferGetPixelFormatType()) of one of the DXT formats in VPUSupport.h.
+ by CVPixelBufferGetPixelFormatType()) of one of the DXT formats in HapSupport.h.
  */
 @property (readwrite) CVPixelBufferRef buffer;
 

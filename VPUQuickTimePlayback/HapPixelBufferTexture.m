@@ -1,13 +1,13 @@
 //
-//  VPUPixelBufferTexture.m
+//  HapPixelBufferTexture.m
 //
 //  Created by Tom Butterworth on 16/05/2012.
 //  Copyright (c) 2012 Tom Butterworth. All rights reserved.
 //
 
-#import "VPUPixelBufferTexture.h"
+#import "HapPixelBufferTexture.h"
 #import <OpenGL/CGLMacro.h>
-#import "VPUSupport.h"
+#import "HapSupport.h"
 
 // Utility to round up to a multiple of 4.
 static int roundUpToMultipleOf4( int n )
@@ -17,11 +17,11 @@ static int roundUpToMultipleOf4( int n )
 	return n;
 }
 
-@interface VPUPixelBufferTexture (Shader)
+@interface HapPixelBufferTexture (Shader)
 - (GLhandleARB)loadShaderOfType:(GLenum)type;
 @end
 
-@implementation VPUPixelBufferTexture
+@implementation HapPixelBufferTexture
 - (id)initWithContext:(CGLContextObj)context
 {
     self = [super init];
@@ -80,16 +80,16 @@ static int roundUpToMultipleOf4( int n )
     unsigned int bitsPerPixel;
     
     switch (newPixelFormat) {
-        case kVPUSPixelFormatTypeRGB_DXT1:
+        case kHapPixelFormatTypeRGB_DXT1:
             newInternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
             bitsPerPixel = 4;
             break;
-        case kVPUSPixelFormatTypeRGBA_DXT1:
+        case kHapPixelFormatTypeRGBA_DXT1:
             newInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
             bitsPerPixel = 4;
             break;
-        case kVPUSPixelFormatTypeRGBA_DXT5:
-        case kVPUSPixelFormatTypeYCoCg_DXT5:
+        case kHapPixelFormatTypeRGBA_DXT5:
+        case kHapPixelFormatTypeYCoCg_DXT5:
             newInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             bitsPerPixel = 8;
             break;
@@ -191,7 +191,7 @@ static int roundUpToMultipleOf4( int n )
 
 - (GLhandleARB)shaderProgramObject
 {
-    if (buffer && CVPixelBufferGetPixelFormatType(buffer) == kVPUSPixelFormatTypeYCoCg_DXT5)
+    if (buffer && CVPixelBufferGetPixelFormatType(buffer) == kHapPixelFormatTypeYCoCg_DXT5)
     {
         if (shader == NULL)
         {
