@@ -1,4 +1,4 @@
-vpup-quicktime-playback-demo
+hap-quicktime-playback-demo
 ============================
 
-A demonstration of GPU-accelerated playback of vpu movies using the QuickTime codec.
+A demonstration of GPU-accelerated playback of Hap movies using the QuickTime codec.
