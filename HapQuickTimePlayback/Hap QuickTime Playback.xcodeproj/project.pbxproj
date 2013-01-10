@@ -21,7 +21,7 @@
 		96C6D01D1500FC80007973A4 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96C6D01C1500FC80007973A4 /* QuickTime.framework */; };
 		E22B178F15CDAE7A00C40DCD /* ScaledCoCgYToRGBA.vert in Resources */ = {isa = PBXBuildFile; fileRef = E22B178B15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.vert */; };
 		E22B179015CDAE7A00C40DCD /* ScaledCoCgYToRGBA.frag in Resources */ = {isa = PBXBuildFile; fileRef = E22B178A15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.frag */; };
-		E22B179215CDAFB000C40DCD /* SampleHapYCoCg.mov in Resources */ = {isa = PBXBuildFile; fileRef = E22B179115CDAFB000C40DCD /* SampleHapYCoCg.mov */; };
+		E22B179215CDAFB000C40DCD /* SampleHapPlus.mov in Resources */ = {isa = PBXBuildFile; fileRef = E22B179115CDAFB000C40DCD /* SampleHapPlus.mov */; };
 		E296EC611562FAD4000E6D5C /* HapSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = E296EC601562FAD4000E6D5C /* HapSupport.m */; };
 		E296EC7C15630740000E6D5C /* SampleHap.mov in Resources */ = {isa = PBXBuildFile; fileRef = E296EC7B15630740000E6D5C /* SampleHap.mov */; };
 		E296EC8A1563CA4C000E6D5C /* HapPixelBufferTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = E296EC891563CA4C000E6D5C /* HapPixelBufferTexture.m */; };
@@ -53,7 +53,7 @@
 		96C6D01C1500FC80007973A4 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E22B178A15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.frag */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = ScaledCoCgYToRGBA.frag; sourceTree = "<group>"; };
 		E22B178B15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.vert */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = ScaledCoCgYToRGBA.vert; sourceTree = "<group>"; };
-		E22B179115CDAFB000C40DCD /* SampleHapYCoCg.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SampleHapYCoCg.mov; sourceTree = "<group>"; };
+		E22B179115CDAFB000C40DCD /* SampleHapPlus.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SampleHapPlus.mov; sourceTree = "<group>"; };
 		E296EC5F1562FAC8000E6D5C /* HapSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HapSupport.h; sourceTree = "<group>"; };
 		E296EC601562FAD4000E6D5C /* HapSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HapSupport.m; sourceTree = "<group>"; };
 		E296EC7B15630740000E6D5C /* SampleHap.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SampleHap.mov; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 			children = (
 				E22B178B15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.vert */,
 				E22B178A15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.frag */,
-				E22B179115CDAFB000C40DCD /* SampleHapYCoCg.mov */,
+				E22B179115CDAFB000C40DCD /* SampleHapPlus.mov */,
 				E2FC662A1565C07E00C4D5FB /* SampleHapAlpha.mov */,
 				E296EC7B15630740000E6D5C /* SampleHap.mov */,
 				96C6CFEB1500FBB0007973A4 /* SampleQT.mov */,
@@ -248,7 +248,7 @@
 				96C6CFEC1500FBB0007973A4 /* SampleQT.mov in Resources */,
 				E296EC7C15630740000E6D5C /* SampleHap.mov in Resources */,
 				E2FC662B1565C07E00C4D5FB /* SampleHapAlpha.mov in Resources */,
-				E22B179215CDAFB000C40DCD /* SampleHapYCoCg.mov in Resources */,
+				E22B179215CDAFB000C40DCD /* SampleHapPlus.mov in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

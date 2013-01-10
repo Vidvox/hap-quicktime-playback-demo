@@ -9,6 +9,10 @@
 #include "HapSupport.h"
 #import <QuickTime/QuickTime.h>
 
+#define kHapCodecSubType 'Hap1'
+#define kHapAlphaCodecSubType 'Hap5'
+#define kHapYCoCgCodecSubType 'HapY'
+
 #pragma GCC push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 BOOL HapSMovieHasHapTrack(QTMovie *movie)
@@ -20,9 +24,15 @@ BOOL HapSMovieHasHapTrack(QTMovie *movie)
         
         ImageDescriptionHandle imageDescription = (ImageDescriptionHandle)NewHandle(0); // GetMediaSampleDescription will resize it
         GetMediaSampleDescription(media, 1, (SampleDescriptionHandle)imageDescription);
-        if ((*imageDescription)->cType == 'VPUV')
-        {
-            hasHap = YES;
+        switch ((*imageDescription)->cType) {
+            case kHapCodecSubType:
+            case kHapAlphaCodecSubType:
+            case kHapYCoCgCodecSubType:
+                hasHap = YES;
+                break;
+            default:
+                hasHap = NO;
+                break;
         }
         DisposeHandle((Handle)imageDescription);
     }

@@ -54,7 +54,7 @@
             title = @"SampleHapAlpha";
             break;
         case 3:
-            title = @"SampleHapYCoCg";
+            title = @"SampleHapPlus";
             break;
         default:
             title = nil;

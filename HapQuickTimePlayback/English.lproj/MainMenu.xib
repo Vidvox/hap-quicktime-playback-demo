@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1080</int>
-		<string key="IBDocument.SystemVersion">12C3006</string>
+		<string key="IBDocument.SystemVersion">12C60</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2844</string>
 		<string key="IBDocument.AppKitVersion">1187.34</string>
 		<string key="IBDocument.HIToolboxVersion">625.00</string>
@@ -1414,7 +1414,7 @@
 								<object class="NSButtonCell" id="499693783">
 									<int key="NSCellFlags">67108864</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Hap YCoCg</string>
+									<string key="NSContents">Hap Plus</string>
 									<reference key="NSSupport" ref="725918389"/>
 									<reference key="NSControlView" ref="483022721"/>
 									<int key="NSButtonFlags">1211912448</int>
