@@ -84,10 +84,6 @@ static int roundUpToMultipleOf4( int n )
             newInternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
             bitsPerPixel = 4;
             break;
-        case kHapPixelFormatTypeRGBA_DXT1:
-            newInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-            bitsPerPixel = 4;
-            break;
         case kHapPixelFormatTypeRGBA_DXT5:
         case kHapPixelFormatTypeYCoCg_DXT5:
             newInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;

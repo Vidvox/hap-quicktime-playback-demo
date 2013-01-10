@@ -13,7 +13,6 @@
 #import <QTKit/QTKit.h>
 
 #define kHapPixelFormatTypeRGB_DXT1 'DXt1'
-#define kHapPixelFormatTypeRGBA_DXT1 'DXT1'
 #define kHapPixelFormatTypeRGBA_DXT5 'DXT5'
 #define kHapPixelFormatTypeYCoCg_DXT5 'DYt5'
 
