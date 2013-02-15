@@ -15,22 +15,17 @@
 #import "HapPixelBufferTexture.h"
 
 @interface HapQuickTimePlaybackAppDelegate : NSObject <NSApplicationDelegate> {
-    NSWindow *window;
     NSUInteger              inputSelection;
     
-    OSSpinLock				contextLock;
-    NSOpenGLContext			*sharedContext;
+    QTMovie                 *movie;
+    QTVisualContextRef      visualContext;
     
-    QTMovie					*movie;
-    QTVisualContextRef		vc;
+    IBOutlet GLView         *glView;
     
-    IBOutlet GLView			*qtGLView;
-    
-    HapPixelBufferTexture      *pbTexture;
+    HapPixelBufferTexture   *hapTexture;
 }
 
-- (void) timerCallback:(NSTimer *)t;
 - (void)openMovie:(NSURL *)url;
-@property (assign) IBOutlet NSWindow *window;
+- (void)displayFrame:(CVImageBufferRef)frame;
 @property (assign) NSInteger inputSelectionIndex;
 @end

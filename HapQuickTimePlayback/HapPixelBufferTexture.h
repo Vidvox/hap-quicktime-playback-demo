@@ -9,6 +9,13 @@
 #import <CoreVideo/CoreVideo.h>
 #import <OpenGL/OpenGL.h>
 
+/**
+ A class to maintain a DXT-compressed texture for upload of DXT frames from CoreVideo pixel-buffers.
+ 
+ To handle Scaled YCoCg DXT5 (Hap Q), requires an accompanying shader in two resource files:
+    ScaledCoCgYToRGBA.vert
+    ScaledCoCgYToRGBA.frag
+ */
 @interface HapPixelBufferTexture : NSObject
 {
 @private

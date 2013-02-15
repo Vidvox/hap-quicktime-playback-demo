@@ -8,23 +8,42 @@
 
 #import "HapQuickTimePlaybackAppDelegate.h"
 #import "HapSupport.h"
-#import "VVBasicMacros.h"
-#import <OpenGL/CGLMacro.h>
+
+/*
+ Whenever a frame is ready this gets called by the QTVisualContext, usually on a background thread
+ */
+static void VisualContextFrameCallback(QTVisualContextRef visualContext, const CVTimeStamp *timeStamp, void *refCon)
+{
+    OSErr err = noErr;
+    CVImageBufferRef image;
+    err = QTVisualContextCopyImageForTime(visualContext, nil, nil, &image);
+    
+    if (err == noErr && image)
+    {
+        [(HapQuickTimePlaybackAppDelegate *)refCon displayFrame:image];
+        CVBufferRelease(image);
+    }
+    else if (err != noErr)
+    {
+        NSLog(@"err %hd at QTVisualContextCopyImageForTime(), %s", err, __func__);
+    }
+    
+    QTVisualContextTask(visualContext);
+}
 
 @implementation HapQuickTimePlaybackAppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    sharedContext = [[NSOpenGLContext alloc] initWithFormat:[qtGLView pixelFormat] shareContext:[qtGLView openGLContext]];
-	
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
     self.inputSelectionIndex = 0;
-    
-	[NSTimer scheduledTimerWithTimeInterval:1.0/30.0 target:self selector:@selector(timerCallback:) userInfo:nil repeats:YES];
 }
 
 - (IBAction)openDocument:(id)sender
 {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
+    
     [panel setAllowedFileTypes:[QTMovie movieFileTypes:0]];
+    
     [panel beginWithCompletionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton)
         {
@@ -43,7 +62,9 @@
 {
     inputSelection = index;
     NSString *title;
-    switch (index) {
+    
+    switch (index)
+    {
         case 0:
             title = @"SampleQT";
             break;
@@ -60,8 +81,11 @@
             title = nil;
             break;
     }
+    
     if (title)
     {
+        // Load our movie
+        
         NSURL *url = [[NSBundle mainBundle] URLForResource:title withExtension:@"mov"];
         [self openMovie:url];
     }
@@ -69,7 +93,8 @@
 
 - (void)openMovie:(NSURL *)url
 {
-    // stop and release our old stuff
+    // Stop and release our previous movie
+    
     if (movie)
     {
         [movie stop];
@@ -78,27 +103,24 @@
         movie = nil;
     }
     
-    [pbTexture release];
-    pbTexture = nil;
+    // For simplicity we rebuild the visual context every time - you could re-use it if the new movie
+    // will use exactly the same kind of context as the previous one.
     
-    QTVisualContextRelease(vc);
-    vc = NULL;
+    QTVisualContextRelease(visualContext);
+    visualContext = NULL;
     
-    // set up the new movie and visual context
-    // in a "real" app you would only need to change the context when the need for a pixel-buffer versus texture context changed
-    // as this app toggles between the two, we need to change it every time
+    // Set up the new movie and visual context
     
     movie = [[QTMovie alloc] initWithURL:url error:nil];
-    [movie setAttribute:NUMBOOL(YES) forKey:QTMovieLoopsAttribute];
+    [movie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieLoopsAttribute];
     
-    // don't play the movie until it has been attached to a context, otherwise it will start decompression with a non-optimal pixel format
+    // It's important not to play the movie until it has been attached to a context, otherwise it will start decompression with a non-optimal pixel format
     
-    OSStatus		err = noErr;
+    OSStatus err = noErr;
+    
+    // Check if the movie has a Hap video track
     if (HapSMovieHasHapTrack(movie))
-    {
-        // we re-use a texture for uploading the DXT pixel-buffer
-        pbTexture = [[HapPixelBufferTexture alloc] initWithContext:[sharedContext CGLContextObj]];
-        
+    {        
         CFDictionaryRef pixelBufferOptions = HapSCreateCVPixelBufferOptionsDictionary();
         
         // QT Visual Context attributes
@@ -107,64 +129,76 @@
         
         CFRelease(pixelBufferOptions);
         
-        err = QTPixelBufferContextCreate(kCFAllocatorDefault, (CFDictionaryRef)visualContextOptions, &vc);
+        err = QTPixelBufferContextCreate(kCFAllocatorDefault, (CFDictionaryRef)visualContextOptions, &visualContext);
     }
     else
     {
-        err = QTOpenGLTextureContextCreate(kCFAllocatorDefault,[sharedContext CGLContextObj],[[qtGLView pixelFormat] CGLPixelFormatObj],nil,&vc);
+        err = QTOpenGLTextureContextCreate(kCFAllocatorDefault, [[glView openGLContext] CGLContextObj], [[glView pixelFormat] CGLPixelFormatObj], nil, &visualContext);
     }
-    if (err != noErr)	{
-        NSLog(@"\t\terr %ld, couldnt create visual context at %s",err,__func__);
+    if (err != noErr)
+    {
+        NSLog(@"err %ld, couldnt create visual context at %s", err, __func__);
     }
-    else	{
-        Movie		qtMovie = [movie quickTimeMovie];
-        err = SetMovieVisualContext(qtMovie,vc);
-        if (err != noErr)	{
-            NSLog(@"\t\terr %ld SetMovieVisualContext %s",err,__func__);
+    else
+    {
+        // Set the new-frame callback
+        
+        QTVisualContextSetImageAvailableCallback(visualContext, VisualContextFrameCallback, self);
+        
+        // Set the movie's visual context
+        
+        err = SetMovieVisualContext([movie quickTimeMovie],visualContext);
+        if (err != noErr)
+        {
+            NSLog(@"err %ld SetMovieVisualContext %s", err, __func__);
         }
         else
         {
-            // the movie was attached to the context, we can start it now
+            // The movie was attached to the context, we can start it now
+            
             [movie play];
         }
     }
 }
 
-- (void) timerCallback:(NSTimer *)t
+- (void)displayFrame:(CVImageBufferRef)frame
 {
-	CVImageBufferRef		vcImage = NULL;
-	if (QTVisualContextIsNewImageAvailable(vc,0))	{
-		OSErr					err = noErr;
-		err = QTVisualContextCopyImageForTime(vc,nil,nil,&vcImage);
-		if (err != noErr)	{
-			NSLog(@"\t\terr %hd at QTVisualContextCopyImageForTime(), %s",err,__func__);
-			vcImage = NULL;
-		}
-	}
-    /*
-	else
-		NSLog(@"\t\terr: no new frame available for QT!");
-     */
-	if (vcImage != NULL)	{
-        CFTypeID    imageType = CFGetTypeID(vcImage);
-        if (imageType == CVOpenGLTextureGetTypeID())
+    // Check what type of frame (pixel-buffer or texture) this is
+    
+    CFTypeID imageType = CFGetTypeID(frame);
+    
+    if (imageType == CVOpenGLTextureGetTypeID())
+    {
+        // If we were previously playing Hap frames, we can dispose of the DXT texture now
+        
+        if (hapTexture)
         {
-            CGSize		imageSize = CVImageBufferGetEncodedSize(vcImage);
-            [qtGLView drawTexture:CVOpenGLTextureGetName(vcImage) sized:CGMAKENSSIZE(imageSize) flipped:CVOpenGLTextureIsFlipped(vcImage)];
+            [hapTexture release];
+            hapTexture = nil;
         }
-        else if (imageType == CVPixelBufferGetTypeID())
+        
+        CGSize imageSize = CVImageBufferGetEncodedSize(frame);
+        
+        [glView drawTexture:CVOpenGLTextureGetName(frame) sized:NSSizeFromCGSize(imageSize) flipped:CVOpenGLTextureIsFlipped(frame)];
+    }
+    else if (imageType == CVPixelBufferGetTypeID())
+    {
+        // We re-use a texture for uploading the DXT pixel-buffer, create it if it doesn't already exist
+        
+        if (hapTexture == nil)
         {
-            pbTexture.buffer = vcImage;
-            NSSize imageSize = NSMakeSize(pbTexture.width, pbTexture.height);
-            NSSize textureSize = NSMakeSize(pbTexture.textureWidth, pbTexture.textureHeight);
-            [qtGLView drawTexture:pbTexture.textureName target:GL_TEXTURE_2D imageSize:imageSize textureSize:textureSize flipped:YES usingShader:pbTexture.shaderProgramObject];
+            hapTexture = [[HapPixelBufferTexture alloc] initWithContext:[[glView openGLContext] CGLContextObj]];
         }
-		CVBufferRelease(vcImage);
-	}
-	QTVisualContextTask(vc);
+        
+        // Update the texture
+        
+        hapTexture.buffer = frame;
+        
+        NSSize imageSize = NSMakeSize(hapTexture.width, hapTexture.height);
+        NSSize textureSize = NSMakeSize(hapTexture.textureWidth, hapTexture.textureHeight);
+        
+        [glView drawTexture:hapTexture.textureName target:GL_TEXTURE_2D imageSize:imageSize textureSize:textureSize flipped:YES usingShader:hapTexture.shaderProgramObject];
+    }
 }
-
-@synthesize window;
-
 
 @end

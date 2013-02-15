@@ -1,30 +1,39 @@
 
 #import "GLView.h"
 #import <OpenGL/CGLMacro.h>
-#import "VVSizingTool.h"
 
 
 
 
 @implementation GLView
 
-- (void) drawRect:(NSRect)r	{
+- (void) drawRect:(NSRect)r
+{
     [self drawTexture:0 sized:NSMakeSize(0, 0) flipped:NO];
 }
 
-- (void) drawTexture:(GLuint)t sized:(NSSize)s flipped:(BOOL)f	{
+- (void) drawTexture:(GLuint)t sized:(NSSize)s flipped:(BOOL)f
+{
     [self drawTexture:t target:GL_TEXTURE_RECTANGLE_ARB imageSize:s textureSize:s flipped:f usingShader:NULL];
 }
 
 - (void)reshape
 {
-	needsReshape = YES;
+    needsReshape = YES;
 }
 
-- (void) drawTexture:(GLuint)tx target:(GLenum)tg imageSize:(NSSize)is textureSize:(NSSize)ts flipped:(BOOL)f usingShader:(GLhandleARB)shader
+- (void)update
 {
-	//NSLog(@"%s",__func__);
-    CGLContextObj		cgl_ctx = [[self openGLContext] CGLContextObj];
+    CGLLockContext([[self openGLContext] CGLContextObj]);
+    [super update];
+    CGLUnlockContext([[self openGLContext] CGLContextObj]);
+}
+
+- (void) drawTexture:(GLuint)texture target:(GLenum)target imageSize:(NSSize)imageSize textureSize:(NSSize)textureSize flipped:(BOOL)isFlipped usingShader:(GLhandleARB)shader
+{
+    CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
+    
+    CGLLockContext(cgl_ctx);
     
     NSRect bounds = self.bounds;
     
@@ -47,46 +56,67 @@
         
         needsReshape = NO;
     }
-    if (!NSEqualSizes(is, bounds.size))
+    if (!NSEqualSizes(imageSize, bounds.size))
     {
-        //	clear the view if the texture won't fill it
+        // clear the view if the texture won't fill it
         glClearColor(0.0,0.0,0.0,0.0);
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    if (tx != 0 && !NSEqualSizes(is, NSZeroSize) && !NSEqualSizes(ts, NSZeroSize))
+    if (texture != 0 && !NSEqualSizes(imageSize, NSZeroSize) && !NSEqualSizes(textureSize, NSZeroSize))
     {
-        glEnable(tg);
+        glEnable(target);
         
-        NSRect	destRect = [VVSizingTool
-                            rectThatFitsRect:NSMakeRect(0,0,is.width,is.height)
-                            inRect:bounds
-                            sizingMode:VVSizingModeFit];
+        NSRect destRect = NSMakeRect(0,0,0,0);
+        double bAspect = bounds.size.width/bounds.size.height;
+        double aAspect = imageSize.width/imageSize.height;
         
-        GLfloat vertices[] = {
+        // if the rect i'm trying to fit stuff *into* is wider than the rect i'm resizing
+        if (bAspect > aAspect)
+        {
+            destRect.size.height = bounds.size.height;
+            destRect.size.width = destRect.size.height * aAspect;
+        }
+        // else if the rect i'm resizing is wider than the rect it's going into
+        else if (bAspect < aAspect)
+        {
+            destRect.size.width = bounds.size.width;
+            destRect.size.height = destRect.size.width / aAspect;
+        }
+        else
+        {
+            destRect.size.width = bounds.size.width;
+            destRect.size.height = bounds.size.height;
+        }
+        destRect.origin.x = (bounds.size.width-destRect.size.width)/2.0+bounds.origin.x;
+        destRect.origin.y = (bounds.size.height-destRect.size.height)/2.0+bounds.origin.y;
+        
+        GLfloat vertices[] =
+        {
             destRect.origin.x,                          destRect.origin.y,
             destRect.origin.x+destRect.size.width,      destRect.origin.y,
             destRect.origin.x + destRect.size.width,    destRect.origin.y + destRect.size.height,
             destRect.origin.x,                          destRect.origin.y + destRect.size.height,
         };
         
-        GLfloat			texCoords[] = {
-            0.0,        (f ? is.height : 0.0),
-            is.width,   (f ? is.height : 0.0),
-            is.width,   (f ? 0.0 : is.height),
-            0.0,        (f ? 0.0 : is.height)
+        GLfloat texCoords[] =
+        {
+            0.0,        (isFlipped ? imageSize.height : 0.0),
+            imageSize.width,   (isFlipped ? imageSize.height : 0.0),
+            imageSize.width,   (isFlipped ? 0.0 : imageSize.height),
+            0.0,        (isFlipped ? 0.0 : imageSize.height)
         };
         
-        if (tg == GL_TEXTURE_2D)
+        if (target == GL_TEXTURE_2D)
         {
-            texCoords[1] /= (float)ts.height;
-            texCoords[3] /= (float)ts.height;
-            texCoords[5] /= (float)ts.height;
-            texCoords[7] /= (float)ts.height;
-            texCoords[2] /= (float)ts.width;
-            texCoords[4] /= (float)ts.width;
+            texCoords[1] /= (float)textureSize.height;
+            texCoords[3] /= (float)textureSize.height;
+            texCoords[5] /= (float)textureSize.height;
+            texCoords[7] /= (float)textureSize.height;
+            texCoords[2] /= (float)textureSize.width;
+            texCoords[4] /= (float)textureSize.width;
         }
         
-        glBindTexture(tg,tx);
+        glBindTexture(target,texture);
         
         glVertexPointer(2,GL_FLOAT,0,vertices);
         glTexCoordPointer(2,GL_FLOAT,0,texCoords);
@@ -101,12 +131,13 @@
         {
             glUseProgramObjectARB(NULL);
         }
-        glBindTexture(tg,0);
+        glBindTexture(target,0);
         
-        glDisable(tg);
+        glDisable(target);
     }
-    //	flush!
     glFlush();
+    
+    CGLUnlockContext(cgl_ctx);
 }
 
 @end
