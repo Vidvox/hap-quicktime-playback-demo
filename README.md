@@ -10,6 +10,8 @@ Accelerated Playback
 
 Accelerated playback of Hap involves passing S3TC frames to graphics hardware using OpenGL. The Hap codec will emit S3TC frames when an application indicates it can handle them. This is done using the usual QuickTime playback mechanisms and if you are already using QuickTime the code overhead to support Hap is fairly low.
 
+The [Hap QuickTime codec](https://github.com/bangnoise/hap-qt-codec) must be installed.
+
 The steps are
 
 1. Open a movie and examine its video track to confirm it is Hap
