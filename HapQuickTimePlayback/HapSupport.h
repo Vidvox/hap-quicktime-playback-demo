@@ -26,9 +26,9 @@
 #define kHapPixelFormatTypeYCoCg_DXT5 'DYt5'
 
 /**
- Returns YES if any track of movie is a Hap track, otherwise NO.
+ Returns YES if any track of movie is a Hap track and the codec is installed to handle it, otherwise NO.
  */
-BOOL HapQTMovieHasHapTrack(QTMovie *movie);
+BOOL HapQTMovieHasHapTrackPlayable(QTMovie *movie);
 
 /**
  Returns a dictionary suitable to pass with the kQTVisualContextPixelBufferAttributesKey in an options dictionary when

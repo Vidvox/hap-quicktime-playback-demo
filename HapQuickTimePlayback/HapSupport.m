@@ -16,6 +16,23 @@
 #define kHapAlphaCodecSubType 'Hap5'
 #define kHapYCoCgCodecSubType 'HapY'
 
+/*
+ Searches the list of installed codecs for a given codec
+ */
+static BOOL HapQTCodecIsAvailable(OSType codecType)
+{
+    CodecNameSpecListPtr list;
+    
+    OSStatus error = GetCodecNameList(&list, 0);
+    if (error) return NO;
+    
+    for (short i = 0; i < list->count; i++ )
+    {        
+        if (list->list[i].cType == codecType) return YES;
+    }
+    
+    return NO;
+}
 
 /*
  Much of QuickTime is deprecated in recent MacOS but no equivalent functionality exists in modern APIs,
@@ -23,7 +40,7 @@
  */
 #pragma GCC push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-BOOL HapQTMovieHasHapTrack(QTMovie *movie)
+BOOL HapQTMovieHasHapTrackPlayable(QTMovie *movie)
 {
     // Loop through every video track
     for (QTTrack *track in [movie tracksOfMediaType:QTMediaTypeVideo])
@@ -40,7 +57,7 @@ BOOL HapQTMovieHasHapTrack(QTMovie *movie)
             case kHapCodecSubType:
             case kHapAlphaCodecSubType:
             case kHapYCoCgCodecSubType:
-                return YES;
+                return HapQTCodecIsAvailable(codecType);
             default:
                 break;
         }

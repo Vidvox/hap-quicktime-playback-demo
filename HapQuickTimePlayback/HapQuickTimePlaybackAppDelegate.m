@@ -119,7 +119,7 @@ static void VisualContextFrameCallback(QTVisualContextRef visualContext, const C
     OSStatus err = noErr;
     
     // Check if the movie has a Hap video track
-    if (HapQTMovieHasHapTrack(movie))
+    if (HapQTMovieHasHapTrackPlayable(movie))
     {        
         CFDictionaryRef pixelBufferOptions = HapQTCreateCVPixelBufferOptionsDictionary();
         
@@ -141,7 +141,7 @@ static void VisualContextFrameCallback(QTVisualContextRef visualContext, const C
     }
     else
     {
-        // Set the new-frame callback
+        // Set the new-frame callback. You could use another mechanism, such as a CVDisplayLink, instead
         
         QTVisualContextSetImageAvailableCallback(visualContext, VisualContextFrameCallback, self);
         
