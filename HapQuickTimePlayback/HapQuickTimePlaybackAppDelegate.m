@@ -119,9 +119,9 @@ static void VisualContextFrameCallback(QTVisualContextRef visualContext, const C
     OSStatus err = noErr;
     
     // Check if the movie has a Hap video track
-    if (HapSMovieHasHapTrack(movie))
+    if (HapQTMovieHasHapTrack(movie))
     {        
-        CFDictionaryRef pixelBufferOptions = HapSCreateCVPixelBufferOptionsDictionary();
+        CFDictionaryRef pixelBufferOptions = HapQTCreateCVPixelBufferOptionsDictionary();
         
         // QT Visual Context attributes
         NSDictionary *visualContextOptions = [NSDictionary dictionaryWithObject:(NSDictionary *)pixelBufferOptions

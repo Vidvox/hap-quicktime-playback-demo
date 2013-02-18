@@ -9,40 +9,49 @@
 #include "HapSupport.h"
 #import <QuickTime/QuickTime.h>
 
+/*
+ These are the four-character-codes used to designate the three Hap codecs
+ */
 #define kHapCodecSubType 'Hap1'
 #define kHapAlphaCodecSubType 'Hap5'
 #define kHapYCoCgCodecSubType 'HapY'
 
+
+/*
+ Much of QuickTime is deprecated in recent MacOS but no equivalent functionality exists in modern APIs,
+ so we ignore these warnings.
+ */
 #pragma GCC push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-BOOL HapSMovieHasHapTrack(QTMovie *movie)
+BOOL HapQTMovieHasHapTrack(QTMovie *movie)
 {
-    BOOL hasHap = NO;
+    // Loop through every video track
     for (QTTrack *track in [movie tracksOfMediaType:QTMediaTypeVideo])
     {
         Media media = [[track media] quickTimeMedia];
         
+        // Get the codec-type of this track
         ImageDescriptionHandle imageDescription = (ImageDescriptionHandle)NewHandle(0); // GetMediaSampleDescription will resize it
         GetMediaSampleDescription(media, 1, (SampleDescriptionHandle)imageDescription);
-        switch ((*imageDescription)->cType) {
+        OSType codecType = (*imageDescription)->cType;
+        DisposeHandle((Handle)imageDescription);
+        
+        switch (codecType) {
             case kHapCodecSubType:
             case kHapAlphaCodecSubType:
             case kHapYCoCgCodecSubType:
-                hasHap = YES;
-                break;
+                return YES;
             default:
-                hasHap = NO;
                 break;
         }
-        DisposeHandle((Handle)imageDescription);
     }
-    return hasHap;
+    return NO;
 }
 #pragma GCC pop
 
-CFDictionaryRef HapSCreateCVPixelBufferOptionsDictionary()
+CFDictionaryRef HapQTCreateCVPixelBufferOptionsDictionary()
 {
-    // the pixel formats we want. These are registered by the Hap codec.
+    // The pixel formats we want. These are registered by the Hap codec.
     SInt32 rgb_dxt1 = kHapPixelFormatTypeRGB_DXT1;
     SInt32 rgba_dxt5 = kHapPixelFormatTypeRGBA_DXT5;
     SInt32 ycocg_dxt5 = kHapPixelFormatTypeYCoCg_DXT5;

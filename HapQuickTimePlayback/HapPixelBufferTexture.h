@@ -12,7 +12,7 @@
 /**
  A class to maintain a DXT-compressed texture for upload of DXT frames from CoreVideo pixel-buffers.
  
- To handle Scaled YCoCg DXT5 (Hap Q), requires an accompanying shader in two resource files:
+ Handling Scaled YCoCg DXT5 (Hap Q), requires an accompanying shader in two resource files:
     ScaledCoCgYToRGBA.vert
     ScaledCoCgYToRGBA.frag
  */
@@ -67,9 +67,9 @@
 @property (readonly) GLuint height;
 
 /**
- YCoCg DXT requires a shader to convert color values when it is drawn.
- If the attached pixel-buffer contains YCoCg pixels, the value of this property will be non-NULL
- and should be bound to the context prior to drawing the texture.
+ Scaled YCoCg DXT5 requires a shader to convert color values when it is drawn.
+ If the attached pixel-buffer contains Scaled YCoCg DXT5 pixels, the value of this property will be non-NULL
+ and should be bound to the GL context prior to drawing the texture.
  */
 @property (readonly) GLhandleARB shaderProgramObject;
 

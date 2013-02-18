@@ -61,6 +61,8 @@ static int roundUpToMultipleOf4( int n )
         return;
     }
     
+    // Check the buffer padding
+    
     size_t extraRight, extraBottom;
     
     CVPixelBufferGetExtendedPixels(buffer, NULL, &extraRight, NULL, &extraBottom);
@@ -68,6 +70,7 @@ static int roundUpToMultipleOf4( int n )
     GLuint roundedHeight = height + extraBottom;
     
     // Valid DXT will be a multiple of 4 wide and high
+    
     if (roundedWidth % 4 != 0 || roundedHeight % 4 != 0)
     {
         valid = NO;
@@ -97,19 +100,22 @@ static int roundUpToMultipleOf4( int n )
     }
     
     // Ignore the value for CVPixelBufferGetBytesPerRow()
+    
     size_t bytesPerRow = (roundedWidth * bitsPerPixel) / 8;
     GLsizei newDataLength = bytesPerRow * roundedHeight; // usually not the full length of the buffer
     
     size_t actualBufferSize = CVPixelBufferGetDataSize(buffer);
+    
     // Check the buffer is as large as we expect it to be
-    if (((bitsPerPixel * roundedWidth) / 8) > bytesPerRow
-        || bytesPerRow * roundedHeight > actualBufferSize)
+    
+    if (newDataLength > actualBufferSize)
     {
         valid = NO;
         return;
     }
     
     // If we got this far we're good to go
+    
     valid = YES;
     
     glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT);
@@ -119,6 +125,7 @@ static int roundUpToMultipleOf4( int n )
     GLvoid *baseAddress = CVPixelBufferGetBaseAddress(buffer);
     
     // Create a new texture if our current one isn't adequate
+    
     if (texture == 0 || roundedWidth > backingWidth || roundedHeight > backingHeight || newInternalFormat != internalFormat)
     {
         if (texture != 0)
@@ -131,6 +138,7 @@ static int roundUpToMultipleOf4( int n )
         glBindTexture(GL_TEXTURE_2D, texture);
         
         // On NVIDIA hardware there is a massive slowdown if DXT textures aren't POT-dimensioned, so we use POT-dimensioned backing
+        
         backingWidth = 1;
         while (backingWidth < roundedWidth) backingWidth <<= 1;
         
@@ -142,6 +150,8 @@ static int roundUpToMultipleOf4( int n )
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_SHARED_APPLE);
+        
+        // We allocate the texture with no pixel data, then use CompressedTexSubImage to update the content region
         
         glTexImage2D(GL_TEXTURE_2D, 0, newInternalFormat, backingWidth, backingHeight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);        
         
@@ -177,17 +187,33 @@ static int roundUpToMultipleOf4( int n )
     else return 0;
 }
 
-- (GLuint)width { return width; }
+- (GLuint)width
+{
+    if (valid) return width;
+    else return 0;
+}
 
-- (GLuint)height { return height; }
+- (GLuint)height
+{
+    if (valid) return height;
+    else return 0;
+}
 
-- (GLuint)textureWidth { return backingWidth; }
+- (GLuint)textureWidth
+{
+    if (valid) return backingWidth;
+    else return 0;
+}
 
-- (GLuint)textureHeight { return backingHeight; }
+- (GLuint)textureHeight
+{
+    if (valid) return backingHeight;
+    else return 0;
+}
 
 - (GLhandleARB)shaderProgramObject
 {
-    if (buffer && CVPixelBufferGetPixelFormatType(buffer) == kHapPixelFormatTypeYCoCg_DXT5)
+    if (valid && buffer && CVPixelBufferGetPixelFormatType(buffer) == kHapPixelFormatTypeYCoCg_DXT5)
     {
         if (shader == NULL)
         {
