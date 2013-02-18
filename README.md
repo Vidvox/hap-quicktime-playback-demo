@@ -3,7 +3,7 @@ Hap QuickTime Playback Demo
 
 A demonstration of GPU-accelerated playback of Hap movies using the QuickTime codec.
 
-Hap is a video codec for fast decompression on modern graphics hardware. This is the home of the Hap QuickTime codec. For general information about Hap, see [the Hap project](http://github.com/bangnoise/hap).
+Hap is a video codec for fast decompression on modern graphics hardware. For general information about Hap, see [the Hap project](http://github.com/bangnoise/hap).
 
 Accelerated Playback
 ====================
