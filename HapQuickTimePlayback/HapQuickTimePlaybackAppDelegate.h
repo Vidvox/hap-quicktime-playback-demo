@@ -7,10 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#include <libkern/OSAtomic.h>
-#import <OpenGL/CGLMacro.h>
 #import <QTKit/QTKit.h>
-#import <QuickTime/QuickTime.h>
 #import "GLView.h"
 #import "HapPixelBufferTexture.h"
 
