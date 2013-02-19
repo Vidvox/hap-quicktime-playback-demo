@@ -42,6 +42,6 @@ Further Reading
 Open-Source
 ===========
 
-This code is open-source, licensed under a [FreeBSD](http://www.freebsd.org/copyright/freebsd-license.html) license, meaning you can use it in your commercial or non-commercial applications free of charge.
+This code is open-source, licensed under a [New BSD License](http://github.com/bangnoise/hap-quicktime-playback-demo/blob/master/LICENSE), meaning you can use it in your commercial or non-commercial applications free of charge.
 
-This project was originally written by Tom Butterworth and commissioned by [VIDVOX](http://www.vidvox.net), 2012.
+This project was originally written by [Tom Butterworth](http://kriss.cx/tom) and commissioned by [VIDVOX](http://www.vidvox.net), 2012.
