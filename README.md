@@ -3,14 +3,14 @@ Hap QuickTime Playback Demo
 
 A demonstration of GPU-accelerated playback of Hap movies using the QuickTime codec.
 
-Hap is a video codec for fast decompression on modern graphics hardware. For general information about Hap, see [the Hap project](http://github.com/bangnoise/hap).
+Hap is a video codec for fast decompression on modern graphics hardware. For general information about Hap, see [the Hap project](http://github.com/vidvox/hap).
 
 Accelerated Playback
 ====================
 
 Accelerated playback of Hap involves passing S3TC frames to graphics hardware using OpenGL. The Hap codec will emit S3TC frames when an application indicates it can handle them. This is done using the usual QuickTime playback mechanisms and if you are already using QuickTime the code overhead to support Hap is fairly low.
 
-The [Hap QuickTime codec](https://github.com/bangnoise/hap-qt-codec) must be installed.
+The [Hap QuickTime codec](https://github.com/vidvox/hap-qt-codec) must be installed.
 
 The steps are
 
@@ -42,6 +42,6 @@ Further Reading
 Open-Source
 ===========
 
-This code is open-source, licensed under a [New BSD License](http://github.com/bangnoise/hap-quicktime-playback-demo/blob/master/LICENSE), meaning you can use it in your commercial or non-commercial applications free of charge.
+This code is open-source, licensed under a [New BSD License](http://github.com/vidvox/hap-quicktime-playback-demo/blob/master/LICENSE), meaning you can use it in your commercial or non-commercial applications free of charge.
 
 This project was originally written by [Tom Butterworth](http://kriss.cx/tom) and commissioned by [VIDVOX](http://www.vidvox.net), 2012.
