@@ -98,7 +98,7 @@ static void VisualContextFrameCallback(QTVisualContextRef visualContext, const C
             title = @"SampleHapAlpha";
             break;
         case 3:
-            title = @"SampleHapPlus";
+            title = @"SampleHapQ";
             break;
         default:
             title = nil;
