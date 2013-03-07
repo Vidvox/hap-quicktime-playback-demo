@@ -89,8 +89,79 @@ BOOL HapQTMovieHasHapTrackPlayable(QTMovie *movie)
 }
 #pragma GCC pop
 
+/*
+ Utility function, does what it says...
+ */
+static void HapQTAddNumberToDictionary( CFMutableDictionaryRef dictionary, CFStringRef key, SInt32 numberSInt32 )
+{
+	CFNumberRef number = CFNumberCreate( NULL, kCFNumberSInt32Type, &numberSInt32 );
+	if( ! number )
+		return;
+	CFDictionaryAddValue( dictionary, key, number );
+	CFRelease( number );
+}
+
+/*
+ Register DXT pixel formats. The codec does this too, but it may not be loaded yet.
+ */
+static void HapQTRegisterDXTPixelFormat(OSType fmt, short bits_per_pixel, SInt32 open_gl_internal_format, Boolean has_alpha)
+{
+    /*
+     * See http://developer.apple.com/legacy/mac/library/#qa/qa1401/_index.html
+     */
+    
+    ICMPixelFormatInfo pixelInfo;
+    
+    CFMutableDictionaryRef dict = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                                            0,
+                                                            &kCFTypeDictionaryKeyCallBacks,
+                                                            &kCFTypeDictionaryValueCallBacks);
+    BlockZero(&pixelInfo, sizeof(pixelInfo));
+    pixelInfo.size  = sizeof(ICMPixelFormatInfo);
+    pixelInfo.formatFlags = (has_alpha ? kICMPixelFormatHasAlphaChannel : 0);
+    pixelInfo.bitsPerPixel[0] = bits_per_pixel;
+    pixelInfo.cmpCount = 4;
+    pixelInfo.cmpSize = bits_per_pixel / 4;
+    
+    // Ignore any errors here as this could be a duplicate registration
+    ICMSetPixelFormatInfo(fmt, &pixelInfo);
+    
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatConstant, fmt);
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatBlockWidth, 4);
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatBlockHeight, 4);
+    
+    // CV has a bug where it disregards kCVPixelFormatBlockHeight, so the following line is a lie to
+    // produce correctly-sized buffers
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatBitsPerBlock, bits_per_pixel * 4);
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatOpenGLInternalFormat, open_gl_internal_format);
+        
+    // kCVPixelFormatContainsAlpha is only defined in the SDK for 10.7 plus
+    CFDictionarySetValue(dict, CFSTR("ContainsAlpha"), (has_alpha ? kCFBooleanTrue : kCFBooleanFalse));
+    
+    CVPixelFormatDescriptionRegisterDescriptionWithPixelFormatType(dict, fmt);
+    CFRelease(dict);
+}
+
+static void HapQTRegisterPixelFormats(void)
+{
+    static BOOL registered = NO;
+    if (!registered)
+    {
+        // Register our DXT pixel buffer types if they're not already registered
+        // arguments are: OSType, OpenGL internalFormat, alpha
+        HapQTRegisterDXTPixelFormat(kHapPixelFormatTypeRGB_DXT1, 4, 0x83F0, false);
+        HapQTRegisterDXTPixelFormat(kHapPixelFormatTypeRGBA_DXT5, 8, 0x83F3, true);
+        HapQTRegisterDXTPixelFormat(kHapPixelFormatTypeYCoCg_DXT5, 8, 0x83F3, false);
+        registered = YES;
+    }
+}
+
 CFDictionaryRef HapQTCreateCVPixelBufferOptionsDictionary()
 {
+    // The pixel formats must be registered before requesting them for a QTPixelBufferContext.
+    // The codec does this but it is possible it may not be loaded yet.
+    HapQTRegisterPixelFormats();
+    
     // The pixel formats we want. These are registered by the Hap codec.
     SInt32 rgb_dxt1 = kHapPixelFormatTypeRGB_DXT1;
     SInt32 rgba_dxt5 = kHapPixelFormatTypeRGBA_DXT5;
