@@ -116,7 +116,7 @@ static void HapQTRegisterDXTPixelFormat(OSType fmt, short bits_per_pixel, SInt32
                                                             0,
                                                             &kCFTypeDictionaryKeyCallBacks,
                                                             &kCFTypeDictionaryValueCallBacks);
-    BlockZero(&pixelInfo, sizeof(pixelInfo));
+    bzero(&pixelInfo, sizeof(pixelInfo));
     pixelInfo.size  = sizeof(ICMPixelFormatInfo);
     pixelInfo.formatFlags = (has_alpha ? kICMPixelFormatHasAlphaChannel : 0);
     pixelInfo.bitsPerPixel[0] = bits_per_pixel;
@@ -127,12 +127,13 @@ static void HapQTRegisterDXTPixelFormat(OSType fmt, short bits_per_pixel, SInt32
     ICMSetPixelFormatInfo(fmt, &pixelInfo);
     
     HapQTAddNumberToDictionary(dict, kCVPixelFormatConstant, fmt);
-    HapQTAddNumberToDictionary(dict, kCVPixelFormatBlockWidth, 4);
-    HapQTAddNumberToDictionary(dict, kCVPixelFormatBlockHeight, 4);
     
-    // CV has a bug where it disregards kCVPixelFormatBlockHeight, so the following line is a lie to
-    // produce correctly-sized buffers
+    // CV has a bug where it disregards kCVPixelFormatBlockHeight, so we lie about block size
+    // (4x1 instead of actual 4x4) and add a vertical block-alignment key instead
     HapQTAddNumberToDictionary(dict, kCVPixelFormatBitsPerBlock, bits_per_pixel * 4);
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatBlockWidth, 4);
+    HapQTAddNumberToDictionary(dict, kCVPixelFormatBlockVerticalAlignment, 4);
+    
     HapQTAddNumberToDictionary(dict, kCVPixelFormatOpenGLInternalFormat, open_gl_internal_format);
         
     // kCVPixelFormatContainsAlpha is only defined in the SDK for 10.7 plus
@@ -179,10 +180,10 @@ CFDictionaryRef HapQTCreateCVPixelBufferOptionsDictionary()
     CFRelease(formatNumbers[1]);
     CFRelease(formatNumbers[2]);
     
-    const void *keys[2] = { kCVPixelBufferPixelFormatTypeKey, kCVPixelBufferOpenGLCompatibilityKey };
-    const void *values[2] = { formats, kCFBooleanTrue };
+    const void *keys[1] = { kCVPixelBufferPixelFormatTypeKey };
+    const void *values[1] = { formats };
     
-    CFDictionaryRef dictionary = CFDictionaryCreate(kCFAllocatorDefault, keys, values, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionaryRef dictionary = CFDictionaryCreate(kCFAllocatorDefault, keys, values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     
     CFRelease(formats);
     
