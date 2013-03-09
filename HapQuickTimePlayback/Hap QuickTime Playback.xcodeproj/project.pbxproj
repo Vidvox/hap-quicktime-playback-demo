@@ -21,7 +21,7 @@
 		E22B178F15CDAE7A00C40DCD /* ScaledCoCgYToRGBA.vert in Resources */ = {isa = PBXBuildFile; fileRef = E22B178B15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.vert */; };
 		E22B179015CDAE7A00C40DCD /* ScaledCoCgYToRGBA.frag in Resources */ = {isa = PBXBuildFile; fileRef = E22B178A15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.frag */; };
 		E22B179215CDAFB000C40DCD /* SampleHapQ.mov in Resources */ = {isa = PBXBuildFile; fileRef = E22B179115CDAFB000C40DCD /* SampleHapQ.mov */; };
-		E296EC611562FAD4000E6D5C /* HapSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = E296EC601562FAD4000E6D5C /* HapSupport.m */; };
+		E296EC611562FAD4000E6D5C /* HapSupport.c in Sources */ = {isa = PBXBuildFile; fileRef = E296EC601562FAD4000E6D5C /* HapSupport.c */; };
 		E296EC7C15630740000E6D5C /* SampleHap.mov in Resources */ = {isa = PBXBuildFile; fileRef = E296EC7B15630740000E6D5C /* SampleHap.mov */; };
 		E296EC8A1563CA4C000E6D5C /* HapPixelBufferTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = E296EC891563CA4C000E6D5C /* HapPixelBufferTexture.m */; };
 		E2FC662B1565C07E00C4D5FB /* SampleHapAlpha.mov in Resources */ = {isa = PBXBuildFile; fileRef = E2FC662A1565C07E00C4D5FB /* SampleHapAlpha.mov */; };
@@ -51,7 +51,7 @@
 		E22B178B15CD8E0C00C40DCD /* ScaledCoCgYToRGBA.vert */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = ScaledCoCgYToRGBA.vert; sourceTree = "<group>"; };
 		E22B179115CDAFB000C40DCD /* SampleHapQ.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SampleHapQ.mov; sourceTree = "<group>"; };
 		E296EC5F1562FAC8000E6D5C /* HapSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HapSupport.h; sourceTree = "<group>"; };
-		E296EC601562FAD4000E6D5C /* HapSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HapSupport.m; sourceTree = "<group>"; };
+		E296EC601562FAD4000E6D5C /* HapSupport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HapSupport.c; sourceTree = "<group>"; };
 		E296EC7B15630740000E6D5C /* SampleHap.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SampleHap.mov; sourceTree = "<group>"; };
 		E296EC881563CA4C000E6D5C /* HapPixelBufferTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HapPixelBufferTexture.h; sourceTree = "<group>"; };
 		E296EC891563CA4C000E6D5C /* HapPixelBufferTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HapPixelBufferTexture.m; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 				256AC3D80F4B6AC300CF3369 /* HapQuickTimePlaybackAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* HapQuickTimePlaybackAppDelegate.m */,
 				E296EC5F1562FAC8000E6D5C /* HapSupport.h */,
-				E296EC601562FAD4000E6D5C /* HapSupport.m */,
+				E296EC601562FAD4000E6D5C /* HapSupport.c */,
 				E296EC881563CA4C000E6D5C /* HapPixelBufferTexture.h */,
 				E296EC891563CA4C000E6D5C /* HapPixelBufferTexture.m */,
 				962CE64C15052D66009C33F2 /* Supporting GL */,
@@ -247,7 +247,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* HapQuickTimePlaybackAppDelegate.m in Sources */,
 				961440981500E7E700505B7C /* GLView.m in Sources */,
-				E296EC611562FAD4000E6D5C /* HapSupport.m in Sources */,
+				E296EC611562FAD4000E6D5C /* HapSupport.c in Sources */,
 				E296EC8A1563CA4C000E6D5C /* HapPixelBufferTexture.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

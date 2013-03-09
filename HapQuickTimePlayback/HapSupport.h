@@ -32,8 +32,8 @@
 #ifndef QTMultiGPUTextureIssue_HapSupport_h
 #define QTMultiGPUTextureIssue_HapSupport_h
 
-#import <Foundation/Foundation.h>
-#import <QTKit/QTKit.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <QuickTime/QuickTime.h>
 
 #if __LP64__
 
@@ -49,9 +49,16 @@
 #define kHapPixelFormatTypeYCoCg_DXT5 'DYt5'
 
 /**
+ Returns true if any track of movie is a Hap track and the codec is installed to handle it, otherwise false.
+ */
+Boolean HapQTQuickTimeMovieHasHapTrackPlayable(Movie movie);
+
+#ifdef __OBJC__
+/**
  Returns YES if any track of movie is a Hap track and the codec is installed to handle it, otherwise NO.
  */
-BOOL HapQTMovieHasHapTrackPlayable(QTMovie *movie);
+#define HapQTMovieHasHapTrackPlayable(m) ((BOOL)HapQTQuickTimeMovieHasHapTrackPlayable([(m) quickTimeMovie]))
+#endif
 
 /**
  Returns a dictionary suitable to pass with the kQTVisualContextPixelBufferAttributesKey in an options dictionary when

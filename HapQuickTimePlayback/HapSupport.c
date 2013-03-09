@@ -42,19 +42,19 @@
 /*
  Searches the list of installed codecs for a given codec
  */
-static BOOL HapQTCodecIsAvailable(OSType codecType)
+static Boolean HapQTCodecIsAvailable(OSType codecType)
 {
     CodecNameSpecListPtr list;
     
     OSStatus error = GetCodecNameList(&list, 0);
-    if (error) return NO;
+    if (error) return false;
     
     for (short i = 0; i < list->count; i++ )
     {        
-        if (list->list[i].cType == codecType) return YES;
+        if (list->list[i].cType == codecType) return true;
     }
     
-    return NO;
+    return false;
 }
 
 /*
@@ -63,29 +63,35 @@ static BOOL HapQTCodecIsAvailable(OSType codecType)
  */
 #pragma GCC push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-BOOL HapQTMovieHasHapTrackPlayable(QTMovie *movie)
+Boolean HapQTQuickTimeMovieHasHapTrackPlayable(Movie movie)
 {
-    // Loop through every video track
-    for (QTTrack *track in [movie tracksOfMediaType:QTMediaTypeVideo])
+    if (movie)
     {
-        Media media = [[track media] quickTimeMedia];
-        
-        // Get the codec-type of this track
-        ImageDescriptionHandle imageDescription = (ImageDescriptionHandle)NewHandle(0); // GetMediaSampleDescription will resize it
-        GetMediaSampleDescription(media, 1, (SampleDescriptionHandle)imageDescription);
-        OSType codecType = (*imageDescription)->cType;
-        DisposeHandle((Handle)imageDescription);
-        
-        switch (codecType) {
-            case kHapCodecSubType:
-            case kHapAlphaCodecSubType:
-            case kHapYCoCgCodecSubType:
-                return HapQTCodecIsAvailable(codecType);
-            default:
-                break;
+        for (long i = 1; i <= GetMovieTrackCount(movie); i++) {
+            Track track = GetMovieIndTrack(movie, i);
+            Media media = GetTrackMedia(track);
+            OSType mediaType;
+            GetMediaHandlerDescription(media, &mediaType, NULL, NULL);
+            if (mediaType == VideoMediaType)
+            {
+                // Get the codec-type of this track
+                ImageDescriptionHandle imageDescription = (ImageDescriptionHandle)NewHandle(0); // GetMediaSampleDescription will resize it
+                GetMediaSampleDescription(media, 1, (SampleDescriptionHandle)imageDescription);
+                OSType codecType = (*imageDescription)->cType;
+                DisposeHandle((Handle)imageDescription);
+                
+                switch (codecType) {
+                    case kHapCodecSubType:
+                    case kHapAlphaCodecSubType:
+                    case kHapYCoCgCodecSubType:
+                        return HapQTCodecIsAvailable(codecType);
+                    default:
+                        break;
+                }
+            }
         }
     }
-    return NO;
+    return false;
 }
 #pragma GCC pop
 
@@ -145,7 +151,7 @@ static void HapQTRegisterDXTPixelFormat(OSType fmt, short bits_per_pixel, SInt32
 
 static void HapQTRegisterPixelFormats(void)
 {
-    static BOOL registered = NO;
+    static Boolean registered = false;
     if (!registered)
     {
         // Register our DXT pixel buffer types if they're not already registered
@@ -153,7 +159,7 @@ static void HapQTRegisterPixelFormats(void)
         HapQTRegisterDXTPixelFormat(kHapPixelFormatTypeRGB_DXT1, 4, 0x83F0, false);
         HapQTRegisterDXTPixelFormat(kHapPixelFormatTypeRGBA_DXT5, 8, 0x83F3, true);
         HapQTRegisterDXTPixelFormat(kHapPixelFormatTypeYCoCg_DXT5, 8, 0x83F3, false);
-        registered = YES;
+        registered = true;
     }
 }
 
