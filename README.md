@@ -23,7 +23,7 @@ The steps are
 This example includes reusable code to aid the process. Steps 1. and 2. utilise
 
     HapSupport.h
-    HapSupport.m
+    HapSupport.c
 
 Steps 4. and 5. utilise
 
