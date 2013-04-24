@@ -28,14 +28,23 @@
 #ifndef QTMultiGPUTextureIssue_HapSupport_h
 #define QTMultiGPUTextureIssue_HapSupport_h
 
-#import <CoreFoundation/CoreFoundation.h>
-#import <QuickTime/QuickTime.h>
+#if defined(__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
+#include <QuickTime/QuickTime.h>
+#elif defined(_WIN32)
+#include <QTML.h>
+#include <Movies.h>
+#endif
 
 #if __LP64__
 
 #error Hap QuickTime support requires 32-bit QuickTime APIs but this target is 64-bit
 
 #else
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  The four-character-codes used to describe the pixel-formats of DXT frames emitted by the Hap QuickTime codec.
@@ -61,6 +70,10 @@ Boolean HapQTQuickTimeMovieHasHapTrackPlayable(Movie movie);
  creating a CVPixelBufferContext.
  */
 CFDictionaryRef HapQTCreateCVPixelBufferOptionsDictionary();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
