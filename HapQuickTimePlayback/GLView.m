@@ -67,7 +67,9 @@
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         glHint(GL_CLIP_VOLUME_CLIPPING_HINT_EXT, GL_FASTEST);
-        
+
+        glMatrixMode(GL_TEXTURE);
+        glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glMatrixMode(GL_PROJECTION);
