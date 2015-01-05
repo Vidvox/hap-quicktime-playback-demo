@@ -27,6 +27,7 @@
 
 #import "HapQuickTimePlaybackAppDelegate.h"
 #import "HapSupport.h"
+#import <OpenGL/gl.h>
 
 /*
  Whenever a frame is ready this gets called by the QTVisualContext, usually on a background thread
